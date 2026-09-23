@@ -4,6 +4,9 @@
 # One-liner: irm https://raw.githubusercontent.com/xsazedul/safe-pc-cleaner/main/safe_pc_cleaner.ps1 | iex
 # ==============================================================================
 
+# Ensure UTF-8 console output if supported
+try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch {}
+
 param (
     [string]$TargetFolder = "",
     [string]$Cutoff = "",
@@ -15,10 +18,10 @@ Write-Host "  Safe PC Cleaner & Duplicate Finder Assistant" -ForegroundColor Cya
 Write-Host "  GitHub: https://github.com/xsazedul/safe-pc-cleaner" -ForegroundColor DarkCyan
 Write-Host "==========================================================" -ForegroundColor Cyan
 
-# 1. টার্গেট ফোল্ডার নির্বাচন
+# 1. Target Folder Selection
 if ([string]::IsNullOrWhiteSpace($TargetFolder)) {
     $defaultFolder = "$HOME\Downloads"
-    $inputFolder = Read-Host "যে ফোল্ডার স্ক্যান করতে চান [Downloads ফোল্ডারের জন্য Enter চাপুন]"
+    $inputFolder = Read-Host "Folder to scan [Press Enter for Downloads ($defaultFolder)]"
     if ([string]::IsNullOrWhiteSpace($inputFolder)) {
         $TargetFolder = $defaultFolder
     } else {
@@ -27,13 +30,13 @@ if ([string]::IsNullOrWhiteSpace($TargetFolder)) {
 }
 
 if (-not (Test-Path $TargetFolder)) {
-    Write-Host "[ERROR] ফোল্ডারটি খুঁজে পাওয়া যায়নি: $TargetFolder" -ForegroundColor Red
+    Write-Host "[ERROR] Target directory does not exist: $TargetFolder" -ForegroundColor Red
     exit
 }
 
-# 2. দিন বা তারিখ ইনপুট
+# 2. Days or Date Input
 if ([string]::IsNullOrWhiteSpace($Cutoff)) {
-    $inputCutoff = Read-Host "দিন সংখ্যা (যেমন 180) অথবা তারিখ (YYYY-MM-DD) লিখুন [ডিফল্ট 180 দিন]"
+    $inputCutoff = Read-Host "Enter days (e.g. 180, 90) OR cutoff date (YYYY-MM-DD) [Default: 180]"
     if ([string]::IsNullOrWhiteSpace($inputCutoff)) {
         $Cutoff = "180"
     } else {
@@ -41,7 +44,7 @@ if ([string]::IsNullOrWhiteSpace($Cutoff)) {
     }
 }
 
-# দিন সংখ্যা নাকি তারিখ তা পার্স করা
+# Parse days or date
 $cutoffDate = $null
 if ($Cutoff -match '^\d+$') {
     $days = [int]$Cutoff
@@ -58,12 +61,12 @@ if ($Cutoff -match '^\d+$') {
     }
 }
 
-# 3. মোড নির্বাচন (Preview নাকি Delete)
+# 3. Select Mode (Preview vs Delete)
 if ([string]::IsNullOrWhiteSpace($Mode)) {
-    Write-Host "`nমোড নির্বাচন করুন:" -ForegroundColor Yellow
-    Write-Host "  [1] Preview Mode (নিরাপদ - কোনো ফাইল ডিলিট হবে না) [ডিফল্ট]"
-    Write-Host "  [2] Delete Mode (ফাইল Recycle Bin-এ সরানো হবে)"
-    $inputMode = Read-Host "পছন্দ লিখুন (1 অথবা 2)"
+    Write-Host "`nSelect Running Mode:" -ForegroundColor Yellow
+    Write-Host "  [1] Preview Mode (Safe - No files will be deleted) [Default]"
+    Write-Host "  [2] Delete Mode  (Files will be sent to Recycle Bin)"
+    $inputMode = Read-Host "Choose option (1 or 2)"
     if ($inputMode.Trim() -eq "2") {
         $Mode = "delete"
     } else {
@@ -75,7 +78,7 @@ Write-Host "`nTarget Directory : $TargetFolder" -ForegroundColor Yellow
 Write-Host "Cutoff Threshold : $thresholdText" -ForegroundColor Yellow
 Write-Host "Running Mode     : $(if ($Mode -eq 'delete') { 'DELETE (Send to Recycle Bin)' } else { 'PREVIEW (Safe - No Deletion)' })" -ForegroundColor Yellow
 
-# যে শব্দ বা এক্সটেনশনগুলো পাসওয়ার্ড বা সংবেদনশীল কি হতে পারে
+# Keywords and extensions that may contain passwords, keys, or sensitive credentials
 $SensitiveKeywords = @("pass", "password", "key", "secret", "credential", "token", "backup", "pin", "wallet", "seed")
 $SensitiveExtensions = @(".kdbx", ".key", ".pem", ".ppk", ".pfx", ".p12", ".crt", ".env", ".ovpn", ".wallet", ".seed")
 
@@ -116,7 +119,7 @@ if ($skippedSensitive.Count -gt 0) {
 }
 
 # -------------------------------------------------------------
-# 1. পুরনো ফাইল ফিল্টারিং
+# 1. Filter Old Files
 # -------------------------------------------------------------
 $oldFiles = $safeFiles | Where-Object { $_.LastWriteTime -lt $cutoffDate }
 
@@ -130,7 +133,7 @@ foreach ($of in $oldFiles) {
 }
 
 # -------------------------------------------------------------
-# 2. ডুপ্লিকেট ফাইল খোঁজা (SHA256 হ্যাশ চেক করে)
+# 2. Check Duplicates (SHA256 Hash verification)
 # -------------------------------------------------------------
 Write-Host "`n----------------------------------------------------------" -ForegroundColor Cyan
 Write-Host " 2. Checking for duplicate files (Hash verification)..." -ForegroundColor Green
@@ -168,7 +171,7 @@ foreach ($df in $duplicateFiles) {
 }
 
 # -------------------------------------------------------------
-# 3. অ্যাকশন এক্সিকিউশন
+# 3. Action Execution
 # -------------------------------------------------------------
 Write-Host "`n==========================================================" -ForegroundColor Cyan
 if ($Mode -ne "delete") {
