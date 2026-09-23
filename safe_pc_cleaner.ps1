@@ -4,14 +4,14 @@
 # One-liner: irm https://raw.githubusercontent.com/xsazedul/safe-pc-cleaner/main/safe_pc_cleaner.ps1 | iex
 # ==============================================================================
 
-# Ensure UTF-8 console output if supported
-try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch {}
-
 param (
     [string]$TargetFolder = "",
     [string]$Cutoff = "",
     [string]$Mode = ""
 )
+
+# Ensure UTF-8 console output if supported
+try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch {}
 
 Write-Host "==========================================================" -ForegroundColor Cyan
 Write-Host "  Safe PC Cleaner & Duplicate Finder Assistant" -ForegroundColor Cyan
