@@ -11,7 +11,7 @@
 কোনো কিছু ডাউনলোড বা ইন্সটল করার প্রয়োজন নেই! আপনার কম্পিউটারে **PowerShell** ওপেন করে শুধু নিচের কমান্ডটি কপি করে পেস্ট করুন এবং `Enter` চাপুন:
 
 ```powershell
-irm https://raw.githubusercontent.com/xsazedul/safe-pc-cleaner/main/safe_pc_cleaner.ps1 | iex
+irm https://raw.githubusercontent.com/xsazedul/safe-pc-cleaner/v1.0.0/safe_pc_cleaner.ps1 | iex
 ```
 
 > কমান্ডটি রান করলে স্ক্রিপ্ট আপনাকে সরাসরি ফোল্ডারের নাম, দিন বা তারিখ এবং মোড (প্রিভিউ নাকি ক্লিনআপ) ইনপুট দিতে বলবে।
