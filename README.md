@@ -20,11 +20,11 @@ irm https://raw.githubusercontent.com/xsazedul/safe-pc-cleaner/v1.0.1/safe_pc_cl
 
 ## 📸 স্ক্রিনশট (Screenshots)
 
-### ১. পুরনো ফাইল শনাক্তকরণ
-![Old Files Preview](screenshots/old_files_preview.png)
+### ১. ইন্টারঅ্যাক্টিভ প্রম্পট ও মোড নির্বাচন (Interactive CLI Prompt)
+![Interactive CLI Prompt](screenshots/cli_prompt.png)
 
-### ২. ডুপ্লিকেট ফাইল ডিটেকশন ও নিরাপদ রিমুভ কনফার্মেশন
-![Duplicate Files Preview](screenshots/duplicate_files_preview.png)
+### ২. পাসওয়ার্ড/সিক্রেট প্রোটেকশন ও স্ক্যান ফলাফল (Protection & Scan Results)
+![Protection & Scan Results](screenshots/scan_results.png)
 
 ---
 
