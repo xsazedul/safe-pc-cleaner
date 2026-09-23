@@ -1,22 +1,39 @@
 # ==============================================================================
 # Safe PC Cleaner & Duplicate Finder Assistant
 # Repository: https://github.com/xsazedul/safe-pc-cleaner
+# One-liner: irm https://raw.githubusercontent.com/xsazedul/safe-pc-cleaner/main/safe_pc_cleaner.ps1 | iex
 # ==============================================================================
 
 param (
-    [string]$TargetFolder = "$HOME\Downloads",
-    [string]$Cutoff = "", # দিন সংখ্যা (যেমন: 180) অথবা নির্দিষ্ট তারিখ (যেমন: 2026-01-01)
-    [string]$Mode = "preview" # 'preview' অথবা 'delete'
+    [string]$TargetFolder = "",
+    [string]$Cutoff = "",
+    [string]$Mode = ""
 )
 
 Write-Host "==========================================================" -ForegroundColor Cyan
 Write-Host "  Safe PC Cleaner & Duplicate Finder Assistant" -ForegroundColor Cyan
+Write-Host "  GitHub: https://github.com/xsazedul/safe-pc-cleaner" -ForegroundColor DarkCyan
 Write-Host "==========================================================" -ForegroundColor Cyan
 
-# যদি প্যারামিটারে কাটঅফ না দেওয়া থাকে, তাহলে ব্যবহারকারীকে সরাসরি ইনপুট দিতে বলা হবে
+# 1. টার্গেট ফোল্ডার নির্বাচন
+if ([string]::IsNullOrWhiteSpace($TargetFolder)) {
+    $defaultFolder = "$HOME\Downloads"
+    $inputFolder = Read-Host "যে ফোল্ডার স্ক্যান করতে চান [Downloads ফোল্ডারের জন্য Enter চাপুন]"
+    if ([string]::IsNullOrWhiteSpace($inputFolder)) {
+        $TargetFolder = $defaultFolder
+    } else {
+        $TargetFolder = $inputFolder.Trim().Trim('"').Trim("'")
+    }
+}
+
+if (-not (Test-Path $TargetFolder)) {
+    Write-Host "[ERROR] ফোল্ডারটি খুঁজে পাওয়া যায়নি: $TargetFolder" -ForegroundColor Red
+    exit
+}
+
+# 2. দিন বা তারিখ ইনপুট
 if ([string]::IsNullOrWhiteSpace($Cutoff)) {
-    Write-Host "দিন সংখ্যা (যেমন 180, 90) অথবা নির্দিষ্ট তারিখ (যেমন 2026-01-01) লিখুন।" -ForegroundColor Gray
-    $inputCutoff = Read-Host "দিন বা তারিখ লিখুন [ডিফল্ট 180 দিন]"
+    $inputCutoff = Read-Host "দিন সংখ্যা (যেমন 180) অথবা তারিখ (YYYY-MM-DD) লিখুন [ডিফল্ট 180 দিন]"
     if ([string]::IsNullOrWhiteSpace($inputCutoff)) {
         $Cutoff = "180"
     } else {
@@ -24,7 +41,7 @@ if ([string]::IsNullOrWhiteSpace($Cutoff)) {
     }
 }
 
-# দিন সংখ্যা নাকি তারিখ তা যাচাই ও পার্স করা
+# দিন সংখ্যা নাকি তারিখ তা পার্স করা
 $cutoffDate = $null
 if ($Cutoff -match '^\d+$') {
     $days = [int]$Cutoff
@@ -41,14 +58,22 @@ if ($Cutoff -match '^\d+$') {
     }
 }
 
-Write-Host "Target Directory : $TargetFolder" -ForegroundColor Yellow
+# 3. মোড নির্বাচন (Preview নাকি Delete)
+if ([string]::IsNullOrWhiteSpace($Mode)) {
+    Write-Host "`nমোড নির্বাচন করুন:" -ForegroundColor Yellow
+    Write-Host "  [1] Preview Mode (নিরাপদ - কোনো ফাইল ডিলিট হবে না) [ডিফল্ট]"
+    Write-Host "  [2] Delete Mode (ফাইল Recycle Bin-এ সরানো হবে)"
+    $inputMode = Read-Host "পছন্দ লিখুন (1 অথবা 2)"
+    if ($inputMode.Trim() -eq "2") {
+        $Mode = "delete"
+    } else {
+        $Mode = "preview"
+    }
+}
+
+Write-Host "`nTarget Directory : $TargetFolder" -ForegroundColor Yellow
 Write-Host "Cutoff Threshold : $thresholdText" -ForegroundColor Yellow
 Write-Host "Running Mode     : $(if ($Mode -eq 'delete') { 'DELETE (Send to Recycle Bin)' } else { 'PREVIEW (Safe - No Deletion)' })" -ForegroundColor Yellow
-
-if (-not (Test-Path $TargetFolder)) {
-    Write-Host "[ERROR] Target directory does not exist: $TargetFolder" -ForegroundColor Red
-    exit
-}
 
 # যে শব্দ বা এক্সটেনশনগুলো পাসওয়ার্ড বা সংবেদনশীল কি হতে পারে
 $SensitiveKeywords = @("pass", "password", "key", "secret", "credential", "token", "backup", "pin", "wallet", "seed")
@@ -148,8 +173,7 @@ foreach ($df in $duplicateFiles) {
 Write-Host "`n==========================================================" -ForegroundColor Cyan
 if ($Mode -ne "delete") {
     Write-Host "[STATUS] PREVIEW MODE: No files were touched or deleted." -ForegroundColor Green
-    Write-Host "Review the list above. To actually move files to Recycle Bin, run with -Mode delete:" -ForegroundColor Yellow
-    Write-Host "powershell -ExecutionPolicy Bypass -File `"$PSCommandPath`" -TargetFolder `"$TargetFolder`" -Cutoff `"$Cutoff`" -Mode delete" -ForegroundColor Cyan
+    Write-Host "Review the list above. To delete duplicates & old files, run again and choose option [2]." -ForegroundColor Yellow
 } else {
     Add-Type -AssemblyName Microsoft.VisualBasic
     Write-Host "[WARNING] The identified duplicate & old files will be sent to Recycle Bin." -ForegroundColor Red
