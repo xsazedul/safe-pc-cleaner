@@ -8,7 +8,7 @@
 
 - 🔒 **পাসওয়ার্ড ও সিক্রেট প্রোটেকশন:** যে ফাইলে `password`, `key`, `secret`, `credential`, `token`, `pin` ইত্যাদি শব্দ বা `.env`, `.kdbx`, `.key`, `.pem` ইত্যাদি সংবেদনশীল এক্সটেনশন আছে, সেগুলো স্বয়ংক্রিয়ভাবে বাদ রাখা হয়।
 - 👥 **স্মার্ট ডুপ্লিকেট ডিটেকশন:** ফাইল সাইজ এবং SHA256 ক্রিপ্টোগ্রাফিক হ্যাশ যাচাই করে শতভাগ একই কনটেন্টযুক্ত একাধিক কপি ফাইল খুঁজে বের করে।
-- ⏳ **পুরনো ফাইল ফিল্টারিং:** নির্দিষ্ট সময় (ডিফল্ট ১৮০ দিন বা ৬ মাস) ধরে পরিবর্তন বা ব্যবহার না হওয়া ফাইল চিহ্নিত করে।
+- 📅 **ম্যানুয়াল তারিখ বা দিন ইনপুট:** ব্যবহারকারী চাইলে দিন সংখ্যা (যেমন: 180, 90 দিন) অথবা নির্দিষ্ট যেকোনো তারিখ (যেমন: `2026-01-01`) ম্যানুয়ালি ইনপুট দিতে পারেন।
 - 🛡️ **ড্রাই-রান / প্রিভিউ মোড (ডিফল্ট):** প্রথমে কোনো ফাইল ডিলিট না করে সম্পূর্ণ তালিকা প্রদর্শন করে।
 - ♻️ **Recycle Bin ইন্টিগ্রেশন:** ফাইল স্থায়ীভাবে মুছে ফেলার বদলে উইন্ডোজের Recycle Bin-এ পাঠায়, যাতে ভুলবশত কোনো ফাইল গেলে সহজেই পুনরুদ্ধার করা যায়।
 
@@ -16,28 +16,40 @@
 
 ## ব্যবহারের নিয়ম (How to Use)
 
-### ১. প্রিভিউ মোড (কোনো ফাইল ডিলিট হবে না)
-ডিফল্টভাবে আপনার `Downloads` ফোল্ডার স্ক্যান করতে:
+### ১. সাধারণ ব্যবহার (Interactive Prompt)
+কমান্ড প্রম্পট বা PowerShell-এ গিয়ে স্ক্রিপ্টটি রান করলে এটি আপনাকে সরাসরি দিন সংখ্যা বা তারিখ ইনপুট দিতে বলবে:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\safe_pc_cleaner.ps1
 ```
+> প্রম্পট এলে আপনি সরাসরি লিখতে পারেন:
+> * দিন সংখ্যা: `90` বা `180`
+> * অথবা নির্দিষ্ট তারিখ: `2026-01-01` (এই তারিখের আগের পুরনো ফাইল খুঁজবে)
 
-অন্য কোনো নির্দিষ্ট ফোল্ডার স্ক্যান করতে চাইলে `-TargetFolder` ব্যবহার করুন:
+---
+
+### ২. সরাসরি প্যারামিটার দিয়ে ব্যবহার (CLI Options)
+
+**নির্দিষ্ট দিন সংখ্যা দিয়ে প্রিভিউ:**
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\safe_pc_cleaner.ps1 -TargetFolder "D:\MyFiles"
+powershell -ExecutionPolicy Bypass -File .\safe_pc_cleaner.ps1 -Cutoff 90
 ```
 
-দিন সংখ্যা পরিবর্তন করতে চাইলে (যেমন ৯০ দিন বা ৩ মাস):
+**নির্দিষ্ট তারিখ দিয়ে প্রিভিউ:**
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\safe_pc_cleaner.ps1 -DaysOld 90
+powershell -ExecutionPolicy Bypass -File .\safe_pc_cleaner.ps1 -Cutoff "2026-01-01"
+```
+
+**অন্য কোনো নির্দিষ্ট ফোল্ডার স্ক্যান করতে:**
+```powershell
+powershell -ExecutionPolicy Bypass -File .\safe_pc_cleaner.ps1 -TargetFolder "D:\MyFiles" -Cutoff "2025-12-31"
 ```
 
 ---
 
-### ২. ক্লিনআপ মোড (ফাইল Recycle Bin-এ পাঠানো)
-ফাইল তালিকা যাচাই করার পর যদি অপ্রয়োজনীয় ও ডুপ্লিকেট ফাইলগুলো রিসাইকেল বিনে পাঠাতে চান:
+### ৩. ক্লিনআপ মোড (ফাইল Recycle Bin-এ সরানো)
+ফাইল তালিকা দেখে যাচাই করার পর Recycle Bin-এ পাঠাতে `-Mode delete` যোগ করুন:
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\safe_pc_cleaner.ps1 -TargetFolder "$HOME\Downloads" -Mode delete
+powershell -ExecutionPolicy Bypass -File .\safe_pc_cleaner.ps1 -TargetFolder "$HOME\Downloads" -Cutoff "2026-01-01" -Mode delete
 ```
 > **নোট:** ডিলিট মোড চালু করলে স্ক্রিপ্টটি কাজ শুরুর আগে আপনার থেকে `Y/N` কনফার্মেশন চাইবে।
 
