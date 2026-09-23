@@ -1,57 +1,68 @@
 # 🧹 Safe PC Cleaner & Duplicate Finder (PowerShell)
 
-একটি নিরাপদ, স্মার্ট ও প্রাইভেসিবান্ধব PowerShell টুল যা আপনার পিসির নির্দিষ্ট ফোল্ডার স্ক্যান করে অপ্রয়োজনীয় পুরনো ফাইল এবং ডুপ্লিকেট ফাইল খুঁজে বের করে নিরাপদে Recycle Bin-এ পাঠায়।
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Windows-0078D6.svg)](https://www.microsoft.com/windows)
+[![Shell](https://img.shields.io/badge/Shell-PowerShell-5391FE.svg)](https://github.com/PowerShell/PowerShell)
 
-কোনো ফাইল ডাউনলোড বা ক্লোন না করেই যেকোনো উইন্ডোজ পিসির **PowerShell**-এ একটি মাত্র কমান্ড পেস্ট করে এটি চালানো যায়!
+A safe, privacy-focused, and intelligent PowerShell automation utility to identify unused old files and duplicate files on Windows — without risking passwords, private keys, or system-critical files.
+
+Run instantly with a **single command** in Windows PowerShell. No downloads, cloning, or manual setup required!
 
 ---
 
-## ⚡ দ্রুত শুরু করুন (Quick Start)
+## ⚡ Quick Start (Instant Run)
 
-কোনো কিছু ডাউনলোড বা ইন্সটল করার প্রয়োজন নেই! আপনার কম্পিউটারে **PowerShell** ওপেন করে শুধু নিচের কমান্ডটি কপি করে পেস্ট করুন এবং `Enter` চাপুন:
+Open **Windows PowerShell** and paste the command below:
 
 ```powershell
 irm https://raw.githubusercontent.com/xsazedul/safe-pc-cleaner/v1.0.1/safe_pc_cleaner.ps1 | iex
 ```
 
-> কমান্ডটি রান করলে স্ক্রিপ্ট আপনাকে সরাসরি ফোল্ডারের নাম, দিন বা তারিখ এবং মোড (প্রিভিউ নাকি ক্লিনআপ) ইনপুট দিতে বলবে।
+> **Interactive Experience:** The script will automatically prompt you for the target folder, age/date cutoff threshold, and execution mode (Preview vs. Delete).
 
 ---
 
-## 📸 স্ক্রিনশট (Screenshots)
+## 📸 Screenshots
 
-### ১. ইন্টারঅ্যাক্টিভ প্রম্পট ও মোড নির্বাচন (Interactive CLI Prompt)
+### 1. Interactive CLI & Mode Selection
 ![Interactive CLI Prompt](screenshots/cli_prompt.png)
 
-### ২. পাসওয়ার্ড/সিক্রেট প্রোটেকশন ও স্ক্যান ফলাফল (Protection & Scan Results)
+### 2. Sensitive File Protection & Scan Results
 ![Protection & Scan Results](screenshots/scan_results.png)
 
 ---
 
-## ✨ প্রধান বৈশিষ্ট্যসমূহ (Features)
+## ✨ Key Features
 
-- 🔒 **পাসওয়ার্ড ও সিক্রেট প্রোটেকশন:** যে ফাইলে `password`, `key`, `secret`, `credential`, `token`, `pin` ইত্যাদি শব্দ আছে বা এক্সটেনশন `.env`, `.kdbx`, `.key`, `.pem`, `.wallet` ইত্যাদি সংবেদনশীল—সেগুলো ১০০% নিরাপদে বাদ রাখা হয়।
-- 👥 **স্মার্ট ডুপ্লিকেট ডিটেকশন:** ফাইলের সাইজ এবং SHA256 ক্রিপ্টোগ্রাফিক হ্যাশ যাচাই করে শতভাগ অবিকল ডুপ্লিকেট ফাইল খুঁজে বের করে।
-- 📅 **ম্যানুয়াল তারিখ বা দিন ইনপুট:** ব্যবহারকারী চাইলে দিন সংখ্যা (যেমন: 180 বা 90 দিন) অথবা নির্দিষ্ট যেকোনো তারিখ (যেমন: `2026-01-01`) ম্যানুয়ালি দিতে পারেন।
-- 🛡️ **ড্রাই-রান / প্রিভিউ মোড (ডিফল্ট):** প্রথমে কোনো ফাইল ডিলিট হয় না; ব্যবহারকারীকে তালিকা দেখানো হয়।
-- ♻️ **Recycle Bin ইন্টিগ্রেশন:** ফাইল স্থায়ীভাবে ডিলিট করার বদলে উইন্ডোজের Recycle Bin-এ পাঠায়, যাতে ভুলবশত কোনো ফাইল গেলে সহজেই পুনরুদ্ধার করা যায়।
+- 🔒 **Password & Secret Protection:** Automatically scans for and skips sensitive files containing keywords like `password`, `key`, `secret`, `credential`, `token`, `pin` or file extensions like `.env`, `.kdbx`, `.key`, `.pem`, `.wallet`.
+- 👥 **Cryptographic Duplicate Detection:** Uses file size comparison and **SHA-256 cryptographic hashing** to accurately identify 100% identical duplicate files.
+- 📅 **Flexible Cutoff (Custom Days or Specific Date):** Filter files older than a custom number of days (e.g., `90` or `180` days) or before a specific date (e.g., `2026-01-01`).
+- 🛡️ **Default Dry-Run / Preview Mode:** Runs safely by default without deleting or touching any files until you explicitly select Delete mode.
+- ♻️ **Safe Recycle Bin Routing:** Never permanently purges files — moves selected items directly to the **Windows Recycle Bin**, allowing easy restoration at any time.
 
 ---
 
-## 💻 অ্যাডভান্সড ব্যবহার (Advanced CLI Usage)
+## 💻 Advanced CLI Usage
 
-আপনি চাইলে কমান্ডলাইনে প্যারামিটার দিয়েও সরাসরি নির্দিষ্ট ফোল্ডার ও ডেট ফিল্টার করতে পারেন:
+Advanced users can pass command-line arguments directly to customize folder scans:
 
 ```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/xsazedul/safe-pc-cleaner/main/safe_pc_cleaner.ps1))) -TargetFolder "D:\MyFiles" -Cutoff "2026-01-01" -Mode preview
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/xsazedul/safe-pc-cleaner/v1.0.1/safe_pc_cleaner.ps1))) -TargetFolder "D:\MyFiles" -Cutoff "2026-01-01" -Mode preview
 ```
 
-### প্যারামিটারসমূহ:
-* `-TargetFolder` : স্ক্যান করার ফোল্ডার পাথ (যেমন: `"$HOME\Downloads"` বা `"D:\Work"`)
-* `-Cutoff` : কত দিন পুরনো (যেমন: `90`, `180`) অথবা নির্দিষ্ট তারিখ (যেমন: `"2025-12-31"`)
-* `-Mode` : `preview` (শুধু তালিকা দেখাবে) অথবা `delete` (রিসাইকেল বিনে পাঠাবে)
+### Parameters:
+* `-TargetFolder` : Path to directory to scan (Defaults to `$HOME\Downloads`)
+* `-Cutoff` : Age threshold in days (e.g., `90`, `180`) or specific cutoff date (e.g., `"2025-12-31"`)
+* `-Mode` : `preview` (dry-run review only) or `delete` (send approved files to Recycle Bin)
 
 ---
 
-## 📄 লাইসেন্স (License)
-এই প্রজেক্টটি [MIT License](LICENSE) এর আওতাধীন।
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/xsazedul/safe-pc-cleaner/issues).
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
